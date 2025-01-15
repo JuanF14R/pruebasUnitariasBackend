@@ -56,6 +56,7 @@ export const putProductById = async (request, response) => {
         let idForPut = request.params.id; 
         let dataForUpdate = request.body; 
 
+
         const productUpdate = await productModel.findByIdAndUpdate(idForPut, dataForUpdate); 
 
         if(!productUpdate){
@@ -72,7 +73,7 @@ export const putProductById = async (request, response) => {
     } catch (error) {
         return response.status(400).json({
             "mensaje": "Ocurrio un error al actualizar la camiseta",
-            "problem": error || error.message
+            "problem": error.message
         });
     }
 }

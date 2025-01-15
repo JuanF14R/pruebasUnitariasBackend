@@ -26,7 +26,6 @@ describe('Pruebas de los contraloderes de productos', () =>{
         talla: "M",
         price:"10000",
         stock: "2",
-        id: '673ffb2b5ea00ead048d0327'
       }
 
 
@@ -81,7 +80,8 @@ describe('Pruebas de los contraloderes de productos', () =>{
 
     it('Debería actualizar el producto correctamente', async() => {
 
-        await new productModel(testProduct).save();
+      const idProduct = await new productModel(testProduct).save();  
+      
 
         const dataForUpdate = {
             image:"img2",
@@ -94,18 +94,21 @@ describe('Pruebas de los contraloderes de productos', () =>{
             id: '1234567891qwerty'
         };
 
-        const res = await supertest(app).put("/productos/actualizar/:id").send(dataForUpdate);
+        const res = await supertest(app).put("/productos/actualizar/" + idProduct.id).send(dataForUpdate);
 
         expect(res.statusCode).toBe(200);
         
     });
 
-    it('Debería devolver error si ingresa un id incorrecto', async () => {
+    it('Debería devolver error si ingresa un id valido pero que no existe en la base de datos', async () => {
 
-        await new productModel(testProduct).save();
+        const productoCreado = await new productModel(testProduct).save();
+        console.log(productoCreado._id);
+        const idProduct = '673ffb2b5ea00ead048d0327';
+        
 
 
-        const res = await supertest(app).put("/productos/actualizar/:id").send(testProduct);
+        const res = await supertest(app).put("/productos/actualizar/" + idProduct).send(testProduct);
         expect(res.statusCode).toBe(404);
         expect(res.body).toHaveProperty('mensaje', "Lo siento!!! No se encontró alguna camistea para actualizar");
     });
